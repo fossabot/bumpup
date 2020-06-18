@@ -43,7 +43,7 @@ jobs:
         run: |
           npx gulp checksum
           git add .
-          git commit -asm "chore: checksum"
+          git commit -asm "fix: recompile with new dependencies"
       - name: Test
         env:
           NPM_TOKEN: DUMMY
