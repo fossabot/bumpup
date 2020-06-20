@@ -28,7 +28,7 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "test": "exit 0",
+    "test": "jest --silent --colors",
     "version": "node ../../core/cli/dist/index.cjs"
   },
   "devDependencies": {

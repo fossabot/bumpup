@@ -18,5 +18,6 @@ export default {
         typescript({
             clean: true,
         })
-    ]
+    ],
+    external:['path']
 };

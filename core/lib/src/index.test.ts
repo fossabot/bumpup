@@ -1,42 +1,57 @@
 import {
-    emoji,
-    parseEmoji,
-    release,
-    Type,
-    Bump,
-    Determine,
-    Version,
-    Record, Releaser
+    bumpupWithConfig,
+    BumpupConfig,
+    ModuleLoader,
+    loadModules,
+    ModuleConfig, Step, loadSubModuleWithModuleLoader,
 } from './index';
 import 'jest-chain';
 
 describe('@bumpup/lib', () => {
-    it('release calls each functions excatly once', () => {
-        const type: Type = jest.fn(lastVersion => 'fix');
-        const version: Version = jest.fn(() => '1.0.0');
-        const getNewVersionFromLastVersion = jest.fn(lastVersion => '1.0.1');
-        const determine: Determine = jest.fn(changeType => getNewVersionFromLastVersion);
-        const bump: Bump = jest.fn(version => ({status: '', message: ''}));
-        const record: Record = jest.fn(version => ({status: '', message: ''}));
-        const rel: Releaser = release(version)(type)(determine)(bump)(record);
-        rel();
+    const version: Step = jest.fn(data => ({version: '1.0.0'}));
+    const type: Step = jest.fn(data => ({...data, type: 'fix'}));
+    const determine: Step = jest.fn(data => ({...data, newVersion: '1.0.1'}));
+    const bump: Step = jest.fn(data => data);
+    const record: Step = jest.fn(data => data);
 
-        expect(type).toHaveBeenCalledTimes(1);
+    const bumpupConfig: BumpupConfig = [
+        version,
+        type,
+        determine,
+        bump,
+        record,
+    ];
+
+    it('should parse the submodule with explicit name', async () => {
+        const modulename = '@bumpup/type#record';
+        const loadModule = async modulename => Promise.resolve({type: 'type', record: 'record'});
+        const loadSubModule = loadSubModuleWithModuleLoader(loadModule);
+
+        expect(await loadSubModule(modulename)).toEqual('record')
+    })
+
+    it('should parse the submodule with default name', async () => {
+        const modulename = '@bumpup/type';
+        const loadModule = async modulename => Promise.resolve({step: 'type', record: 'record'});
+        const loadSubModule = loadSubModuleWithModuleLoader(loadModule);
+
+        expect(await loadSubModule(modulename)).toEqual('type')
+    })
+
+    it('should call each step exactly once', () => {
+        const result = bumpupWithConfig(bumpupConfig);
+        expect(result).toEqual({version: '1.0.0', type: 'fix', newVersion: '1.0.1'})
         expect(version).toHaveBeenCalledTimes(1);
-        expect(determine).toHaveBeenCalledWith('fix').toHaveBeenCalledTimes(1);
-        expect(getNewVersionFromLastVersion).toHaveBeenCalledWith('1.0.0').toHaveBeenCalledTimes(1);
-        expect(bump).toHaveBeenCalledWith('1.0.1').toHaveBeenCalledTimes(1)
-        expect(record).toHaveBeenCalledWith('1.0.1').toHaveBeenCalledTimes(1)
+        expect(type).toHaveBeenCalledWith({version: '1.0.0'}).toHaveBeenCalledTimes(1);
+        expect(determine).toHaveBeenCalledWith({version: '1.0.0', type: 'fix'}).toHaveBeenCalledTimes(1);
+        expect(bump).toHaveBeenCalledWith({version: '1.0.0', type: 'fix', newVersion: '1.0.1'}).toHaveBeenCalledTimes(1)
+        expect(record).toHaveBeenCalledWith({
+            version: '1.0.0',
+            type: 'fix',
+            newVersion: '1.0.1'
+        }).toHaveBeenCalledTimes(1)
     })
-    describe('emoji', ()=>{
-        it('parses emojies on linux', () => {
-            const emoji = parseEmoji('linux');
-            expect(emoji`📦`).toBe('📦');
-        })
-
-        it('parses emojies on windows', () => {
-            const emoji = parseEmoji('win32');
-            expect(emoji`📦`).toBe('✔');
-        })
-    })
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 })

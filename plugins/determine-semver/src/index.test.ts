@@ -1,18 +1,18 @@
-import {determine} from "./index";
+import {step} from "./index";
 
-describe('idempotent-release-determine-semver', ()=>{
+describe('@bumpup/determine-semver', ()=>{
     describe('determine', ()=>{
         it('determines patch versions correctly',()=>{
-            expect(determine('patch')('1.5.10')).toBe("1.5.11");
+            expect(step({type: 'patch', version: '1.5.10'})).toEqual({type: 'patch', version: '1.5.10', newVersion: '1.5.11'});
         });
         it('determines minor versions correctly',()=>{
-            expect(determine('minor')('1.5.10')).toBe("1.6.0");
+            expect(step({type: 'minor', version: '1.5.10'})).toEqual({type: 'minor', version: '1.5.10', newVersion: '1.6.0'});
         });
         it('determines major versions correctly',()=>{
-            expect(determine('major')('1.5.10')).toBe("2.0.0");
+            expect(step({type: 'major', version: '1.5.10'})).toEqual({type: 'major', version: '1.5.10', newVersion: '2.0.0'});
         });
         it('determines none versions correctly',()=>{
-            expect(determine('none')('1.5.10')).toBe(null);
+            expect(step({type: 'none', version: '1.5.10'})).toEqual({type: 'none', version: '1.5.10',newVersion: '1.5.10'});
         });
     })
 })
