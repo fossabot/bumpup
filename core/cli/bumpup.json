@@ -1,22 +1,20 @@
 {
-  "read": [
-    {
-      "reader": "../../../plugins/version-package-json"
+  "version": "1.0.0",
+  "steps": {
+    "version": {
+      "version": "../../../plugins/version-package-json"
+    },
+    "type": {
+      "type": "../../../plugins/type-git"
+    },
+    "determine": {
+      "determine": "../../../plugins/determine-semver"
+    },
+    "bump": {
+      "bump": "../../../plugins/bump-package-json"
+    },
+    "record": {
+      "record": "../../../plugins/type-git#record"
     }
-  ],
-  "type": [
-    {
-      "reader": "../../../plugins/type-git"
-    }
-  ],
-  "determine": [
-    {
-      "determiner": "../../../plugins/determine-semver"
-    }
-  ],
-  "bump": [
-    {
-      "bumper": "../../../plugins/bump-package-json"
-    }
-  ]
+  }
 }

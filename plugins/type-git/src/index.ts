@@ -3,7 +3,7 @@ import {flow, match, debug} from "@bumpup/fp";
 
 const COMMIT_SEPERATOR = `++COMMIT_SEPERATOR++`
 const GIT_COMMAND = `git log --pretty=format:%B${COMMIT_SEPERATOR} .`;
-const GIT_COMMIT_MESSAGE = (newVersion) => `chore(release): ${GIT_COMMIT_SUBJECT(newVersion)}`;
+export const GIT_COMMIT_MESSAGE = (newVersion) => `chore(release): ${GIT_COMMIT_SUBJECT(newVersion)}`;
 const GIT_COMMIT_SUBJECT = (newVersion) => `release version ${newVersion}`;
 
 export type CommitMessage = {
@@ -70,26 +70,28 @@ export const determineHighestCommitType = (types: CommitType[]): CommitType => t
     {test: true, value: acc},
 ]), 'none')
 
-export const getType = lastVersion => flow(
+export const step = data => flow(
     getCommandLineOutput,
     parseCommandLineOutput,
     parseCommitMessages,
-    // debug,
-    filterToLastVersion(lastVersion),
+    filterToLastVersion(data.version),
     getCommitTypes,
     determineHighestCommitType,
-)(lastVersion);
+    type => ({...data, type}),
+)(data);
 
-
-export const record = newVersion => {
-    if (newVersion !== null) {
-        try {
-            child_process.execSync((`git add . && git commit -m "${GIT_COMMIT_MESSAGE(newVersion)}"`))
-        } catch (e) {
-            return {status: 'error', message: e.stdout.toString()}
-        }
-        return {status: 'success', message: `Recording version ${newVersion}`}
-    } else {
-        return {status: 'success', message: `Nothing changed. Not recording.`}
+export const commiter = message => {
+    try {
+        child_process.execSync(message)
+    } catch (e) {
+        console.error(e)
     }
 }
+
+export const recordWithCommiter = commiter => data => {
+    if (data.newVersion !== data.version) {
+        commiter(`git add . && git commit -m "${GIT_COMMIT_MESSAGE(data.newVersion)}"`);
+    }
+    return data;
+}
+export const record = recordWithCommiter(commiter);

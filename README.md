@@ -88,26 +88,17 @@ functional utils like `compose` or `lift`
 This could probably a completely independant package.
 
 ## Roadmap
-- Lifecycle Hooks to support publishing to npm and pushing to git
-- Automated releasing: use bumpup to version itself
+- Lifecycle Hooks to support publishing to npm and pushing to git (Hooks are already built into @bumpup/lib, but @bumpup/cli doesn't support them yet)
 - use monorepo tools like lerna
-- publish to npm
 - bootstrap new plugins
-- ship fp as own library
-- use more typescript types
 - bootstrap config
 - support options for plugins
-- ability to skip steps
 - interactive mode, ask before writing
+- dry mode
 - default config
 - different logging modes
 - linting
-- load plugins from lib and not from cli
 - bumpup -v: Show version of cli, fp, lib and all plugins
 - Refactoring:
-    - Cleanup package.jsons
-    - Ship types with library
     - build and test with es6
     - add integration tests
-    - revise use of tsconfig.json and tsconfig.test.json, jest.config.json
-    - revise naming of things, especially plugins
