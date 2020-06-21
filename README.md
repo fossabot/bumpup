@@ -5,6 +5,7 @@
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 [![Open Source Love png1](https://badges.frapsoft.com/os/v1/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
 [![Awesome Badges](https://img.shields.io/badge/badges-awesome-green.svg)](https://github.com/Naereen/badges)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdanielr1996%2Fbumpup.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdanielr1996%2Fbumpup?ref=badge_shield)
 > 🚧 This is still a work in progress. While the core library already works well, not all use cases may already
 > supported.
 
@@ -103,3 +104,7 @@ This could probably a completely independant package.
     - build and test with es6
     - add integration tests
     - export only necesarry things
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdanielr1996%2Fbumpup.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdanielr1996%2Fbumpup?ref=badge_large)
