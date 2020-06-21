@@ -32,8 +32,12 @@ const ci = () => packagedirs.forEach(doInDir(dir => {
     console.log(child_process.execSync('npm ci').toString());
 }));
 
+const lint = () =>{
+    console.log(child_process.execSync('npx eslint .').toString())
+}
+
 const test = () => {
-    console.log(child_process.execSync(`jest --bail --silent --colors --projects ${packagedirs.join(' ')}`).toString())
+    console.log(child_process.execSync(`jest --silent --colors`).toString())
 }
 const build = () => packagedirs.forEach(doInDir(dir => {
     console.log(child_process.execSync('npm run build').toString());
@@ -53,6 +57,7 @@ const publish = () => packagedirs.forEach(doInDir(dir => {
 
 gulp.task('install', task(install));
 gulp.task('ci', task(ci));
+gulp.task('lint', task(lint));
 gulp.task('test', task(test));
 gulp.task('build', task(build));
 gulp.task('checksum', task(checksum))

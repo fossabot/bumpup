@@ -7,5 +7,5 @@ const readJson = () => fs.readFileSync('bumpup.json');
 
 (async () => {
     await bumpup(getConfigWithPackageJson(readJson())());
-    console.log(`${emoji(`📦`)} done`)
+    console.log(`${emoji`📦`} done`)
 })();

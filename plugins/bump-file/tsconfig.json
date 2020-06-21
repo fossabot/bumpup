@@ -1,6 +1,0 @@
-{
-  "compilerOptions": {
-    "declaration": true
-  },
-  "exclude" : ["src/**/*.test.ts"]
-}

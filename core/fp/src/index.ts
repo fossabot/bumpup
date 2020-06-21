@@ -1,14 +1,20 @@
-export const lift = f => g => h => () => f(g())(h());
-export const trace = <T>(fn: (x: T)=>any) => (x: T): T => {
+export type FunctionalInterface<T, R> = (t?: T) => R | void | undefined
+
+// export const lift = (f: FunctionalInterface<unknown, unknown>) => (g: FunctionalInterface<unknown, unknown>) => (h: FunctionalInterface<unknown, unknown>) => () => {
+//     const gResult = g();
+//
+//     return f(gResult)(h());
+// };
+export const trace = <T>(fn: FunctionalInterface<T, void>) => (x: T): T => {
     fn(x);
     return x;
 };
 
-export const log = message => trace(x => console.log(`${message}: ${x}`))
 export const debug = trace(console.log);
-export const flow = (...fns) => fns.reduce((f, g) => (...args) => g(f(...args)));
-export const pipe = (...fns) => input => fns.reduce((f, g) => f.then(g), Promise.resolve(input));
-export const match = (tests: { test: boolean | undefined, value: any }[]) => {
+
+export const flow = (...fns: FunctionalInterface<unknown, unknown>[]): FunctionalInterface<unknown, unknown> => fns.reduce((f, g) => (...args) => g(f(...args)));
+export const pipe = (...fns: FunctionalInterface<unknown, unknown>[]): FunctionalInterface<unknown, unknown> => input => fns.reduce((f, g) => f.then(g), Promise.resolve(input));
+export const match = <R>(tests: { test: boolean, value: R }[]): R => {
     const results = tests.filter(test => test.test);
-    return results.length>0 ? results[0].value : null;
+    return results.length > 0 ? results[0].value : null;
 }

@@ -104,16 +104,14 @@ describe('@bumpup/type-git', () => {
     })
     describe('record', ()=>{
         it('record new version', ()=> {
-            const commiter = jest.fn(data => {
-            });
+            const commiter = jest.fn();
             const data = {newVersion: '1.0.1', version: '1.0.0'}
             const actual = recordWithCommiter(commiter)(data);
             expect(commiter).toHaveBeenCalledWith(`git add . && git commit -m "${GIT_COMMIT_MESSAGE('1.0.1')}"`);
             expect(actual).toEqual(data);
         })
         it('doesn\'t record for same version', ()=>{
-            const commiter = jest.fn(data => {
-            });
+            const commiter = jest.fn();
             const data = {newVersion: '1.0.0', version: '1.0.0'}
             const actual = recordWithCommiter(commiter)(data);
             expect(commiter).toHaveBeenCalledTimes(0);

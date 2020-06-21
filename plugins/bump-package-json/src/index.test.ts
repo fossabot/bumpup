@@ -2,7 +2,7 @@ import {stepWithFileWriter} from "./index";
 
 describe('@bumpup/determine-semver', ()=>{
     it('writes to file for new version', ()=>{
-        const writer = jest.fn(data=>{});
+        const writer = jest.fn();
         const reader = jest.fn(()=>'{"version":"1.0.0"}')
         const data = {newVersion: '1.0.1', version: '1.0.0'}
         const actual = stepWithFileWriter(reader)(writer)(data);
@@ -14,7 +14,7 @@ describe('@bumpup/determine-semver', ()=>{
 }`)
     })
     it('doesn\'t write to file for same version', ()=>{
-        const writer = jest.fn(data=>{});
+        const writer = jest.fn();
         const reader = jest.fn(()=>'{"version":"1.0.0"}')
         const data = {newVersion: '1.0.0', version: '1.0.0'}
         const actual = stepWithFileWriter(reader)(writer)(data);

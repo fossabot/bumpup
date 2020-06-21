@@ -1,21 +1,18 @@
 import * as child_process from "child_process";
-import {flow, match, debug} from "@bumpup/fp";
+import {flow, match} from "@bumpup/fp";
+import {BumpupData} from "@bumpup/lib";
 
 const COMMIT_SEPERATOR = `++COMMIT_SEPERATOR++`
 const GIT_COMMAND = `git log --pretty=format:%B${COMMIT_SEPERATOR} .`;
-export const GIT_COMMIT_MESSAGE = (newVersion) => `chore(release): ${GIT_COMMIT_SUBJECT(newVersion)}`;
-const GIT_COMMIT_SUBJECT = (newVersion) => `release version ${newVersion}`;
+export const GIT_COMMIT_MESSAGE = (newVersion: string): string => `chore(release): ${GIT_COMMIT_SUBJECT(newVersion)}`;
+const GIT_COMMIT_SUBJECT = (newVersion: string): string => `release version ${newVersion}`;
 
 export type CommitMessage = {
     body?: string,
     footer?: string,
-    mentions?: any,
-    merge?: any,
-    references?: any
-    revert?: any,
     type?: string,
     scope?: string,
-    subject?: string | null,
+    subject?: string,
     header?: string,
     notes?: { title: string, text: string }[]
 }
@@ -42,9 +39,9 @@ export const parseCommitMessage = (message: string): CommitMessage => {
 };
 export const parseCommitMessages = (messages: string[]): CommitMessage[] => messages.map(parseCommitMessage);
 
-export const filterToLastVersion = (lastVersion: string) => (messages: CommitMessage[]) => {
-    let filtered: CommitMessage[] = [];
-    for (let message of messages) {
+export const filterToLastVersion = (lastVersion: string) => (messages: CommitMessage[]): CommitMessage[] => {
+    const filtered: CommitMessage[] = [];
+    for (const message of messages) {
         if (message.subject === GIT_COMMIT_SUBJECT(lastVersion)) {
             break;
         }
@@ -53,6 +50,8 @@ export const filterToLastVersion = (lastVersion: string) => (messages: CommitMes
     return filtered;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export const getCommitType = (message: CommitMessage): CommitType => match([
     {test: message.notes?.map(note => note.title).includes('BREAKING CHANGE'), value: 'major'},
     {test: message.type === 'fix', value: 'patch'},
@@ -61,7 +60,8 @@ export const getCommitType = (message: CommitMessage): CommitType => match([
 ]);
 
 export const getCommitTypes = (messages: CommitMessage[]): CommitType[] => messages.map(getCommitType)
-
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export const determineHighestCommitType = (types: CommitType[]): CommitType => types.reduce((acc, cur) => match([
     {test: acc === 'none', value: cur},
     {test: acc === 'patch' && cur !== 'none', value: cur},
@@ -70,7 +70,7 @@ export const determineHighestCommitType = (types: CommitType[]): CommitType => t
     {test: true, value: acc},
 ]), 'none')
 
-export const step = data => flow(
+export const step = (data: BumpupData): BumpupData => flow(
     getCommandLineOutput,
     parseCommandLineOutput,
     parseCommitMessages,
@@ -79,8 +79,8 @@ export const step = data => flow(
     determineHighestCommitType,
     type => ({...data, type}),
 )(data);
-
-export const commiter = message => {
+export type Commiter = (message: string) => void;
+export const commiter = (message: string): void => {
     try {
         child_process.execSync(message)
     } catch (e) {
@@ -88,7 +88,7 @@ export const commiter = message => {
     }
 }
 
-export const recordWithCommiter = commiter => data => {
+export const recordWithCommiter = (commiter: Commiter) => (data: BumpupData): BumpupData => {
     if (data.newVersion !== data.version) {
         commiter(`git add . && git commit -m "${GIT_COMMIT_MESSAGE(data.newVersion)}"`);
     }

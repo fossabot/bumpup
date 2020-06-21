@@ -1,4 +1,4 @@
-import {flow, lift, match} from "./index";
+import {flow, FunctionalInterface, match} from "./index";
 
 
 describe("@bumpup/fp", () => {
@@ -22,16 +22,38 @@ describe("@bumpup/fp", () => {
             const pipedFunction = flow(toNum, add(2), double, add(4), increment, toStr);
             expect(pipedFunction("1")).toBe("11");
         })
-    })
-    describe('lift', () => {
-        it('lifts functions without arguments', () => {
-            const firstname = () => 'John';
-            const lastname = () => 'Doe';
-            const greet = firstname => lastname => `Hello ${firstname} ${lastname}`;
-            const lifted = lift(greet)(firstname)(lastname);
-            expect(lifted()).toBe('Hello John Doe')
+        it('accept a first function with no arguments', ()=>{
+            const first: FunctionalInterface<void, string> = ()=>'first';
+            const second = str=>str+'second';
+            const third = str=>str+'third';
+
+            const actual = flow(first, second, third)();
+            const expected = 'firstsecondthird';
+            expect(actual).toBe(expected);
+        })
+        it('accept a second function with no arguments', ()=>{
+            const first = ()=>'first';
+            const second = ()=>'second';
+            const third = str=> {
+                if(!str){
+                    console.log(str);
+                }
+            };
+
+            const actual = flow(first, second, third)();
+            const expected = undefined;
+            expect(actual).toBe(expected);
         })
     })
+    // describe('lift', () => {
+    //     it('lifts functions without arguments', () => {
+    //         const firstname = () => 'John';
+    //         const lastname = () => 'Doe';
+    //         const greet = firstname => lastname => `Hello ${firstname} ${lastname}`;
+    //         const lifted = lift(greet)(firstname)(lastname);
+    //         expect(lifted()).toBe('Hello John Doe')
+    //     })
+    // })
     describe('match', () => {
         it('with no tests', () => {
             expect(match([])).toBe(null);

@@ -1,8 +1,7 @@
-import * as fs from 'fs';
-import {debug, flow, trace} from "@bumpup/fp";
-import {ModuleConfig} from "@bumpup/lib";
+import {trace} from "@bumpup/fp";
+import {BumpupData, ModuleConfig} from "@bumpup/lib";
 
-export const parseEmoji = platform => emoji => platform === "win32" ? '✔' : emoji[0];
+export const parseEmoji = (platform: string) => (emoji: TemplateStringsArray): string => platform === "win32" ? '✔' : emoji[0];
 export const emoji = parseEmoji(process.platform);
 
 export type ConfigFile = {
@@ -30,15 +29,15 @@ export function getConfigWithPackageJson(packageJson: Buffer) {
         const json: ConfigFile = parseJson(packageJson);
         return [
             extractVersion(json),
-            trace(data => console.log(`${emoji`📖`} current version is ${data.version}`)),
+            trace((data: BumpupData) => console.log(`${emoji`📖`} current version is ${data.version}`)),
             extractType(json),
-            trace(data => console.log(`${emoji`🅱`} change type is ${data.type}`)),
+            trace((data: BumpupData) => console.log(`${emoji`🅱`} change type is ${data.type}`)),
             extractDetermine(json),
-            trace(data => console.log(`${emoji(`🔎`)} ${data.newVersion !== data.version ? `new version is ${data.newVersion}` : `no new version`}`)),
+            trace((data: BumpupData) => console.log(`${emoji`🔎`} ${data.newVersion !== data.version ? `new version is ${data.newVersion}` : `no new version`}`)),
             extractBump(json),
-            trace(data => console.log(`${emoji(`👊`)} ${data.newVersion !== data.version ? `` : `not`} bumping version in package.json`)),
+            trace((data: BumpupData) => console.log(`${emoji`👊`} ${data.newVersion !== data.version ? `` : `not`} bumping version in package.json`)),
             extractRecord(json),
-            trace(data => console.log(`${emoji(`📌`)} ${data.newVersion !== data.version ? `` : `not`} recording version in git`))
+            trace((data: BumpupData) => console.log(`${emoji`📌`} ${data.newVersion !== data.version ? `` : `not`} recording version in git`))
         ];
     }
 
