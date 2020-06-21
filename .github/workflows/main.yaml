@@ -31,6 +31,11 @@ jobs:
           NPM_TOKEN: DUMMY
         run: |
           npx gulp ci
+      - name: Lint
+        env:
+          NPM_TOKEN: DUMMY
+        run: |
+          npx gulp lint
       - name: Build
         env:
           NPM_TOKEN: DUMMY

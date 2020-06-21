@@ -28,11 +28,11 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "test": "jest --silent --colors",
     "version": "node ../../core/cli/dist/index.cjs"
   },
   "devDependencies": {
     "@bumpup/fp": "../../core/fp",
+    "@bumpup/lib": "file:../../core/lib",
     "@rollup/plugin-node-resolve": "^8.0.1",
     "@types/jest": "^26.0.0",
     "@types/node": "^14.0.13",

@@ -102,3 +102,4 @@ This could probably a completely independant package.
 - Refactoring:
     - build and test with es6
     - add integration tests
+    - export only necesarry things

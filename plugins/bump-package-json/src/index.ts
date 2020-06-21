@@ -1,9 +1,10 @@
 import * as fs from "fs";
-import {flow} from "@bumpup/fp";
+import {flow, FunctionalInterface} from "@bumpup/fp";
+import {BumpupData} from "@bumpup/lib";
 
-export const stepWithFileWriter = reader => writer => data => {
+export const stepWithFileWriter = (reader: FunctionalInterface<void, string>) => (writer: FunctionalInterface<string, void>) => (data: BumpupData): BumpupData => {
     if (data.newVersion !== data.version) {
-        const packageJson = flow(reader, parsePackageJson)();
+        const packageJson = flow(reader, parsePackageJson)() as { version: string };
         packageJson.version = data.newVersion;
         writer(JSON.stringify(packageJson, null, 2));
     }
@@ -16,4 +17,4 @@ const readPackageJson = () => fs.readFileSync('package.json', {encoding: 'utf8',
 export const step = stepWithFileWriter(readPackageJson)(writeToFile)
 
 
-const parsePackageJson = packageJson => JSON.parse(packageJson);
+const parsePackageJson = (packageJsonString): { version: string } => JSON.parse(packageJsonString);
