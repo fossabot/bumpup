@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - release/*
+      - ci/test-report
 
 jobs:
   build:
@@ -53,6 +54,12 @@ jobs:
           NPM_TOKEN: DUMMY
         run: |
           npx gulp test
+      - uses: check-run-reporter/action@v1.1.0
+        if: ${{ always() }}
+        env:
+          CHECK_RUN_REPORTER_LABEL: 'Unit Tests'
+          CHECK_RUN_REPORTER_REPORT: 'junit.xml'
+          CHECK_RUN_REPORTER_TOKEN: ${{ secrets.CHECK_RUN_REPORTER_TOKEN }}
       - name: Version
         env:
           NPM_TOKEN: DUMMY
